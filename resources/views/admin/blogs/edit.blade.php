@@ -153,7 +153,15 @@ $(function() {
   $('.datepicker').datepicker();
   function initSummerNote() {
     $('#summernote-description').summernote({
-      height: 400
+        height: 400,
+        callbacks: {
+            onImageUpload: function(files, editor, welEditable) {
+                sendFile(files[0], this);
+            },
+            onMediaDelete : function(target) {
+                deleteFile(target[0].src);
+            }
+        }
     });
     $('#summernote-description-toc').summernote({
         height: 700,
