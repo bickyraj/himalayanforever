@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Blog;
 use Image;
+use App\Seo;
 use Illuminate\Support\Facades\Log;
 
 class BlogController extends Controller
@@ -52,6 +53,7 @@ class BlogController extends Controller
         $blog->description = $request->description;
         $blog->blog_date = $request->blog_date;
         $blog->slug = $this->create_slug_title($blog->name);
+        $blog->toc = $request->toc;
         $blog->status = 1;
 
         if ($request->hasFile('file')) {
@@ -67,6 +69,10 @@ class BlogController extends Controller
         }
 
         if ($blog->save()) {
+            // save seo
+            if ($request->seo) {
+                $this->createSeo($request->seo, $blog);
+            }
             // save image.
             if ($request->hasFile('file')) {
 
@@ -155,6 +161,7 @@ class BlogController extends Controller
         $blog->description = $request->description;
         $blog->blog_date = $request->blog_date;
         $blog->slug = $this->create_slug_title($blog->name);
+        $blog->toc = $request->toc;
         $blog->status = 1;
 
         if ($request->hasFile('file')) {
@@ -170,6 +177,8 @@ class BlogController extends Controller
         }
 
         if ($blog->save()) {
+            // update seo
+            $this->updateSeo($request->seo, $blog);
             // save image.
             if ($request->hasFile('file')) {
 
@@ -283,5 +292,96 @@ class BlogController extends Controller
         return response()->json([
             'data' => $blogs
         ]);
+    }
+
+    public function createSeo($request, $page)
+    {
+        $seo = new Seo;
+        $seo->meta_title = $request['meta_title'];
+        $seo->meta_keywords = $request['meta_keywords'];
+        $seo->canonical_url = $request['canonical_url'];
+        $seo->meta_description = $request['meta_description'];
+        $seo->seoable_id = $page->id;
+        $seo->seoable_type = "blog";
+
+        if ($seo->save()) {
+            if (isset($request['social_image']) && !empty($request['social_image'])) {
+                $social_image = $request['social_image'];
+                $socialImageName = $social_image->getClientOriginalName();
+                $socialImageFileSize = $social_image->getClientSize();
+                $socialImageType = $social_image->getClientOriginalExtension();
+                $socialImageNameUniqid = md5(microtime()) . '.' . $socialImageType;
+                $socialImageName = $socialImageNameUniqid;
+                $seo->social_image = $socialImageName;
+
+                $image_quality = 100;
+                if (($socialImageFileSize / 1000000) > 1) {
+                    $image_quality = 75;
+                }
+
+                $path = 'public/seos/';
+                $image = Image::make($social_image);
+
+                // store new image
+                Storage::put($path . $seo->id . '/' . $socialImageName, (string) $image->encode('jpg', $image_quality));
+                $file = $path . $seo->id . '/' . $socialImageName;
+
+                $seo->save();
+            }
+            return 1;
+        }
+
+        return 0;
+    }
+
+    public function updateSeo($request, $blog)
+    {
+        if ($blog->seo) {
+            $seo = $blog->seo;
+        } else {
+            $seo = new Seo;
+            $seo->seoable_id = $blog->id;
+            $seo->seoable_type = "blog";
+        }
+
+        $seo->meta_title = $request['meta_title'];
+        $seo->meta_keywords = $request['meta_keywords'];
+        $seo->canonical_url = $request['canonical_url'];
+        $seo->meta_description = $request['meta_description'];
+
+        if ($seo->save()) {
+            if (isset($request['social_image']) && !empty($request['social_image'])) {
+                $social_image = $request['social_image'];
+                $social_image_name = $social_image->getClientOriginalName();
+                $old_social_image_name = $seo->social_image;
+                $socialImageFileSize = $social_image->getClientSize();
+                $socialImageType = $social_image->getClientOriginalExtension();
+                $social_image_name = md5(microtime()) . '.' . $socialImageType;
+                $seo->social_image = $social_image_name;
+
+                $image_quality = 100;
+                if (($socialImageFileSize / 1000000) > 1) {
+                    $image_quality = 75;
+                }
+
+                $path = 'public/seos/';
+                $image = Image::make($social_image);
+
+                // store new image
+                Storage::put($path . $seo->id . '/' . $social_image_name, (string) $image->encode('jpg', $image_quality));
+                // delete old image
+                Storage::delete($path . $seo->id . '/' . $old_social_image_name);
+
+                $file = $path . $seo->id . '/' . $social_image_name;
+                if (!Storage::exists($file)) {
+                    $seo->social_image = "";
+                    $seo->save();
+                }
+
+                $seo->save();
+            }
+            return 1;
+        }
+        return 0;
     }
 }

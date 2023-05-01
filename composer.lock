@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "805444d2f1b5ba5d2f50f3747fbf45eb",
+    "content-hash": "1916d1d3c94e8e32a12fe9b62cfde2b0",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -71,6 +71,43 @@
                 }
             ],
             "time": "2020-09-07T11:50:18+00:00"
+        },
+        {
+            "name": "bickyraj/toc",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bickyraj/toc.git",
+                "reference": "1d2399bc6c44ea5a972cb97473beb20861e2189c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bickyraj/toc/zipball/1d2399bc6c44ea5a972cb97473beb20861e2189c",
+                "reference": "1d2399bc6c44ea5a972cb97473beb20861e2189c",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Bickyraj\\Toc\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "mit"
+            ],
+            "authors": [
+                {
+                    "name": "Bicky Raj Kayastha",
+                    "email": "bickyrajkayastha@gmail.com"
+                }
+            ],
+            "description": "table of content",
+            "support": {
+                "issues": "https://github.com/bickyraj/toc/issues",
+                "source": "https://github.com/bickyraj/toc/tree/v1.0.4"
+            },
+            "time": "2023-05-01T12:50:42+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -7433,5 +7470,5 @@
         "php": "^7.2"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }

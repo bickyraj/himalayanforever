@@ -26,6 +26,21 @@
     </div>
 
 </section>
+@if ($contents)
+<section class="news">
+    <div class="container">
+        <h2>Table of Content</h2>
+        <div class="row">
+            @if(!empty($contents))
+                @include('bickyraj.toc.table', $contents)
+            @endif
+        </div>
+    </div>
+    <div class="container">
+        {!! $body !!}
+    </div>
+</section>
+@endif
 
 <!-- Latest News -->
 <section class="news mb-5">

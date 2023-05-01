@@ -197,6 +197,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
 	Route::get('/admin-setting', 'UserController@setting')->name('user-setting');
 	Route::post('/admin-setting', 'UserController@updateSetting')->name('user-setting.update');
+
+    Route::post('description-images/save', 'DescriptionImageController@saveDescImage')->name('description.save.image');
+    Route::post('description-images/delete', 'DescriptionImageController@deleteDescImage')->name('description.delete.image');
 });
 
 // front routes
