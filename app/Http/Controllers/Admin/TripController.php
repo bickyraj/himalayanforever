@@ -194,7 +194,7 @@ class TripController extends Controller
             // save trip seo exclude
             if (isset($request->trip_itineraries) && !empty($request->trip_itineraries)) {
                 $trip_itineraries = $request->trip_itineraries;
-                $save_trip_itineraries = $this->saveTripItineraries($trip, (array) $trip_itineraries);
+                $this->saveTripItineraries($trip, (array) $trip_itineraries);
             }
 
             $status = 1;

@@ -587,6 +587,7 @@
 <script src="./assets/vendors/jquery-validation/dist/additional-methods.min.js"></script>
 <script src="./assets/vendors/bootstrap-rating-master/bootstrap-rating.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{{ asset('assets/js/description-image.js') }}" data-id="description-image" data-delete-url="{{ route('admin.description.delete.image') }}" data-save-url="{{ route('admin.description.save.image') }}"></script>
 <script type="text/javascript">
 $(function() {
   $("#trip-rating").rating();
@@ -684,7 +685,7 @@ $(function() {
                     </div>\
                     <input type="text" name="trip_itineraries[][name]" id="input-trip-name" class="form-control mb-3 form-control-sm" placeholder="Title">\
                     <div class="itinerary-description-block">\
-                      <div id="summernote-itinerary-'+n+'" class="summernote"></div>\
+                      <div id="summernote-itinerary-'+n+'" class="summernote-itinerary"></div>\
                     </div>\
                   </div>\
               </div>\
@@ -695,16 +696,34 @@ $(function() {
 
     $("#itinerary-block").append(div);
     $('#summernote-itinerary-' + n).summernote({
-      height: 200
+      height: 200,
+      callbacks: {
+          onImageUpload: function(files, editor, welEditable) {
+              sendFile(files[0], this);
+          },
+          onMediaDelete : function(target) {
+              deleteFile(target[0].src);
+          }
+      }
     });
     $("#itinerary-block").attr('data-n', n);
     initItinerarySortable();
   });
 
   function initSummerNote() {
-    // $('#summernote-description').summernote({
-    //   height: 400
-    // });
+    $(".summernote-itinerary").each(function() {
+        $(this).summernote({
+            height: 200,
+            callbacks: {
+                onImageUpload: function(files, editor, welEditable) {
+                    sendFile(files[0], this);
+                },
+                onMediaDelete : function(target) {
+                    deleteFile(target[0].src);
+                }
+            }
+        });
+    });
     $('#summernote-accomodation').summernote();
     $('#summernote-meals').summernote();
     $('#summernote-transportation').summernote();
@@ -935,7 +954,7 @@ $(function() {
       var formData = new FormData(form[0]);
 
       $.each($("#itinerary-block>.itinerary-group"), function(i, v) {
-        var desc = $(v).find('.summernote').summernote('code');
+        var desc = $(v).find('.summernote-itinerary').summernote('code');
         var day = $(v).find('.day-number').find('input').val();
         formData.append('trip_itineraries['+i+'][day]', day);
         formData.append('trip_itineraries['+i+'][display_order]', i + 1);

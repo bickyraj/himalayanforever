@@ -17,7 +17,7 @@
                 </div>
                 <input type="text" name="trip_itineraries[][name]" id="input-trip-name" value="{{ $itinerary->name }}" class="form-control mb-3 form-control-sm" placeholder="Title">
                 <div class="itinerary-description-block">
-                  <div id="summernote-itinerary-{{ $itinerary->day }}" class="summernote"><?= $itinerary->description; ?></div>
+                  <div id="summernote-itinerary-{{ $itinerary->day }}" class="summernote-itinerary"><?= $itinerary->description; ?></div>
                 </div>
               </div>
           </div>
@@ -43,7 +43,7 @@
                 </div>
                 <input type="text" name="trip_itineraries[][name]" id="input-trip-name" class="form-control mb-3 form-control-sm" placeholder="Title">
                 <div class="itinerary-description-block">
-                  <div id="summernote-itinerary-1" class="summernote"></div>
+                  <div id="summernote-itinerary-1" class="summernote-itinerary"></div>
                 </div>
               </div>
           </div>
